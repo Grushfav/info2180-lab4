@@ -1,5 +1,7 @@
 <?php
 
+header('Content-Type: application/json');
+
 $superheroes = [
   [
       "id" => 1,
@@ -63,10 +65,15 @@ $superheroes = [
   ], 
 ];
 
+    if (isset($_GET['format']) && $_GET['format'] === 'html') {
+    echo "<ul>";
+    foreach ($superheroes as $superhero) {
+        echo "<li>" . htmlspecialchars($superhero['alias']) . "</li>";
+    }
+    echo "</ul>";
+    } else {
+    header('Content-Type: application/json');
+    echo json_encode($superheroes);
+    }
 ?>
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
