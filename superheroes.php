@@ -67,7 +67,7 @@ $superheroes = [
 
     $query = isset($_GET['query']) ? trim($_GET['query']) : '';
 
-    // Sanitize input
+    
     $query = filter_var($query, FILTER_SANITIZE_STRING);
 
     if ($query === '') {
