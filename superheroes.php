@@ -65,15 +65,28 @@ $superheroes = [
   ], 
 ];
 
-    if (isset($_GET['format']) && $_GET['format'] === 'html') {
-    echo "<ul>";
-    foreach ($superheroes as $superhero) {
-        echo "<li>" . htmlspecialchars($superhero['alias']) . "</li>";
-    }
-    echo "</ul>";
-    } else {
-    header('Content-Type: application/json');
+    $query = isset($_GET['query']) ? trim($_GET['query']) : '';
+
+    // Sanitize input
+    $query = filter_var($query, FILTER_SANITIZE_STRING);
+
+    if ($query === '') {
     echo json_encode($superheroes);
+    exit;
+    }
+
+    $match = null;
+    foreach ($superheroes as $hero) {
+    if (strcasecmp($hero['name'], $query) === 0 || strcasecmp($hero['alias'], $query) === 0) {
+        $match = $hero;
+        break;
+    }
+    }
+
+    if ($match) {
+    echo json_encode($match);
+    } else {
+    echo json_encode(["error" => "not found"]);
     }
 ?>
 
