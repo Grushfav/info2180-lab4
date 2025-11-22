@@ -69,7 +69,7 @@ $superheroes = [
 
     $query = filter_var($query, FILTER_SANITIZE_STRING);
 
-    // If no query provided return an HTML list of all superheroes
+    
     if ($query === '') {
         echo '<h3>All Superheroes:</h3>';
         echo '<ul>';
