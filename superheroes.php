@@ -1,6 +1,6 @@
 <?php
 
-header('Content-Type: application/json');
+header('Content-Type: text/html; charset=utf-8');
 
 $superheroes = [
   [
@@ -67,26 +67,35 @@ $superheroes = [
 
     $query = isset($_GET['query']) ? trim($_GET['query']) : '';
 
-    
     $query = filter_var($query, FILTER_SANITIZE_STRING);
 
+    // If no query provided return an HTML list of all superheroes
     if ($query === '') {
-    echo json_encode($superheroes);
-    exit;
+        echo '<h3>All Superheroes:</h3>';
+        echo '<ul>';
+        foreach ($superheroes as $hero) {
+            echo '<li>' . htmlspecialchars($hero['alias'], ENT_QUOTES, 'UTF-8') . '</li>';
+        }
+        echo '</ul>';
+        exit;
     }
 
     $match = null;
     foreach ($superheroes as $hero) {
-    if (strcasecmp($hero['name'], $query) === 0 || strcasecmp($hero['alias'], $query) === 0) {
-        $match = $hero;
-        break;
-    }
+        if (strcasecmp($hero['name'], $query) === 0 || strcasecmp($hero['alias'], $query) === 0) {
+            $match = $hero;
+            break;
+        }
     }
 
     if ($match) {
-    echo json_encode($match);
+        
+        echo '<h3>' . htmlspecialchars($match['alias'], ENT_QUOTES, 'UTF-8') . '</h3>';
+        echo '<h4>' . htmlspecialchars($match['name'], ENT_QUOTES, 'UTF-8') . '</h4>';
+        echo '<p>' . htmlspecialchars($match['biography'], ENT_QUOTES, 'UTF-8') . '</p>';
     } else {
-    echo json_encode(["error" => "not found"]);
+        
+        echo '<p>Superhero not found</p>';
     }
 ?>
 

@@ -1,29 +1,19 @@
 document.getElementById("searchBtn").addEventListener("click", () => {
-  const query = document.getElementById("searchInput").value.trim();
-  const url = query ? `superheroes.php?query=${encodeURIComponent(query)}` : "superheroes.php";
+  const raw = document.getElementById("searchInput").value.trim();
+
+  // Basic client-side sanitization: limit length and remove angle brackets
+  const safeQuery = raw.substring(0, 100).replace(/[<>]/g, "");
+  const url = safeQuery ? `superheroes.php?query=${encodeURIComponent(safeQuery)}` : "superheroes.php";
 
   fetch(url)
-    .then(response => response.json())
-    .then(data => {
+    .then(response => response.text())
+    .then(html => {
       const resultDiv = document.getElementById("result");
-
-      if (Array.isArray(data)) {
-        
-        resultDiv.innerHTML = "<h3>All Superheroes:</h3><ul>" +
-          data.map(hero => `<li>${hero.alias}</li>`).join("") +
-          "</ul>";
-      } else if (data.error) {
-        resultDiv.innerHTML = `<p>Superhero not found</p>`;
-      } else {
-       
-        resultDiv.innerHTML = `
-          <h3>${data.alias}</h3>
-          <h4>${data.name}</h4>
-          <p>${data.biography}</p>
-        `;
-      }
+      // insert server-rendered HTML fragment
+      resultDiv.innerHTML = html;
     })
     .catch(error => {
-      document.getElementById("result").innerHTML = `<p>Error: ${error.message}</p>`;
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
     });
 });
